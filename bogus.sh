@@ -1,30 +1,20 @@
 #!/bin/bash
 
-cat /etc/hosts | while read address name 
-do
-    if [ "$address" == "#" ]; then
-        break
+
+check(){
+
+    name=$1
+    addr=$2
+    server=$3
+    #ceva="$(nslookup $name 9.9.9.9)"
+    #echo "$ceva"
+    check="$(nslookup $name $server | grep -v '#' | grep -e 'Address' | grep -o '.*\..*\..*\..*')"
+    a=( $check )
+    #echo ${a[1]}
+    #echo $addr
+    if [ ${a[1]} = $addr ] ; then
+        echo "Correct address"
     fi
-    #echo "$address"
-    flag0=0 
-    flag1=0
-    nslookup $name | while read line
-    do
-        #echo "$line"
-        if [ "$flag1" == "1" ] ; then
-            flag1=0
-            if [ "$address" != "${line##* }" ] ; then
-                echo "Bogus IP for $name in /etc/hosts!"
-                echo "$name $address ${line##* }"
-                break
-            fi
-        fi
-        if [ "$flag0" == "1" ] ; then
-            flag1=1
-            flag0=0
-        fi
-        if [ "$line" == "Non-authoritative answer:" ] ; then
-            flag0=1
-        fi
-    done
-done
+}
+
+check $1 $2 $3
