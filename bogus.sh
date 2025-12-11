@@ -18,3 +18,5 @@ check(){
 }
 
 check $1 $2 $3
+
+#MUAHAHAHAH ANREI SUNT
